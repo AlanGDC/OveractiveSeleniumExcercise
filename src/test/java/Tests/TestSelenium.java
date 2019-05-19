@@ -2,108 +2,60 @@ package Tests;
 
 
  
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
-import org.openqa.selenium.firefox.FirefoxBinary;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
 import org.testng.Assert;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import PageObject.ParkingCalculatorPage;
 import TestData.ParkingTestData;
+import Util.DriverConfiguration;
  
 public class TestSelenium {
-	
 
-    @Test(dataProvider="getData")
-    public static void testParkingCalculator(ParkingTestData testData) throws InterruptedException, ParseException {
-		System.setProperty("webdriver.gecko.driver","/home/alannote/Downloads/geckodriver-v0.24.0-linux64/geckodriver");
-	    
-		FirefoxBinary firefoxBinary = new FirefoxBinary();
-	    firefoxBinary.addCommandLineOptions("--headless");
-	    FirefoxOptions firefoxOptions = new FirefoxOptions();
-	    firefoxOptions.setBinary(firefoxBinary);
-		FirefoxDriver driver = new FirefoxDriver(firefoxOptions);
+    private WebDriver driver;
+    
+    ParkingCalculatorPage parkingCalculatorPage ;
+    SimpleDateFormat format ;
+    
+	@BeforeTest
+	public void configuration() {
+		driver = new FirefoxDriver(DriverConfiguration.configuration());
+		parkingCalculatorPage = new ParkingCalculatorPage(driver);
+		format = new SimpleDateFormat("MM-dd-yyyy");
+	}
+	
+	
+	
+	@Test(dataProvider="getData")
+    public void testParkingCalculator(ParkingTestData testData) throws InterruptedException, ParseException {
 		
-		ParkingCalculatorPage parkingCalculatorPage = new ParkingCalculatorPage(driver);
-		SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy");
-    	
-        
 		driver.get("http://adam.goucher.ca/parkcalc");
 		
 		parkingCalculatorPage.clickAndSelectLotDrop(testData.getLotDropData());		
-		parkingCalculatorPage.completeEntryDate(format.format(testData.getEntryDateData()));;
+		parkingCalculatorPage.completeEntryDate((testData.getEntryDateData()));;
 		parkingCalculatorPage.completeEntryTime(testData.getEntryTimeData());
-		parkingCalculatorPage.completeLeaveDate(format.format(testData.getLeaveDateData()));
+		parkingCalculatorPage.completeLeaveDate((testData.getLeaveDateData()));
 		parkingCalculatorPage.completeLeaveTime(testData.getLeaveTimeData());
 		parkingCalculatorPage.clickOnCalculate();
 		
-		
 		Assert.assertEquals(parkingCalculatorPage.checkCost(), testData.getCostText());
- 
-        driver.quit();
                 
 
     }
     
     @DataProvider
-    public Object[][] getData() throws ParseException {
-    	
-        SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy");
-        Date 	dateEntry;
-        String 	timeEntry;
-        
-        Date 	dateLeave;
-        String 	timeLeave;
-        
-        String 	costExpected;
-        String 	daysExpected;
-        
-        String 	lotDrop;
-        
-        
-        // 	1 test for "Short-Term" :
-       
-        dateEntry = format.parse ( "02-28-2019" );
-        timeEntry = "12:00";
-        
-        dateLeave = format.parse ( "03-01-2019" );
-        timeLeave = "12:00";
-        
-        costExpected = "$ 756.00";
-    	daysExpected = "";
-    	
-    	lotDrop = "STP";
-    	
-    	ParkingTestData shortTermDataTest = new ParkingTestData
-    			(lotDrop, timeEntry, 
-				dateEntry, timeLeave, 
-				dateLeave, costExpected,
-				daysExpected); 
-    	
+    public Object[][] getData() throws ParseException, IOException {
+    	                
+    	ParkingTestData shortTermDataTest = ReadCSV.read();
 
-        // 	1 test for "Long-Term parking" :
-
-        dateEntry = format.parse ( "02-28-2019" );
-        timeEntry = "12:00";
-        
-        dateLeave = format.parse ( "03-01-2019" );
-        timeLeave = "12:00";
-        
-        costExpected = "$ 250.00";
-    	daysExpected = "";
-    	
-    	lotDrop = "LTS";
-    	
-    	ParkingTestData longTermDataTest  = new ParkingTestData
-    			(lotDrop, timeEntry, 
-				dateEntry, timeLeave, 
-				dateLeave, costExpected,
-				daysExpected); 
+    	ParkingTestData longTermDataTest  = ReadCSV.read(); 
     	
     	
         return new Object[][] {{shortTermDataTest},{longTermDataTest}};

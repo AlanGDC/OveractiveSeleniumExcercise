@@ -6,16 +6,16 @@ public class ParkingTestData {
 
 	private String lotDropData;
 	private String entryTimeData;	
-	private Date   entryDateData;
+	private String entryDateData;
 	private String leaveTimeData;
-	private Date   leaveDateData;
+	private String leaveDateData;
 	private String costText;
 	private String daysText;
 
 
 	public ParkingTestData(String lotDropData, String entryTimeData,
-						Date entryDateData, String leaveTimeData, 
-						Date leaveDateData, String costText, String daysText )
+							String entryDateData, String leaveTimeData, 
+							String leaveDateData, String costText, String daysText )
     {
 	   
 		this.lotDropData 	= lotDropData;
@@ -35,7 +35,7 @@ public class ParkingTestData {
 		return entryTimeData;
 	}
 
-	public Date getEntryDateData() {
+	public String getEntryDateData() {
 		return entryDateData;
 	}
 
@@ -43,7 +43,7 @@ public class ParkingTestData {
 		return leaveTimeData;
 	}
 	
-	public Date getLeaveDateData() {
+	public String getLeaveDateData() {
 		return leaveDateData;
 	}
 	
