@@ -1,4 +1,5 @@
 # OveractiveSeleniumExcercise
+[![Build Status](https://travis-ci.org/AlanGDC/OveractiveSeleniumExcercise.svg?branch=master)](https://travis-ci.org/AlanGDC/OveractiveSeleniumExcercise)
 
 Example of Selenium with POM (Page Object Model)
 using tesng and data provider with CSV file.
